@@ -1,4 +1,4 @@
-#! /usr/bin/env bash --
+#! /usr/bin/env bash
 # -*- coding: UTF-8 -*-
 #Copyright (c) 2017-2018, JF Flot <jflot@ulb.ac.be>
 #
