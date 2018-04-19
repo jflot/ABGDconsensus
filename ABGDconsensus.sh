@@ -133,19 +133,8 @@ if [ -d "$OUTFOLDER" ]; then
 fi
 
 
-# create the TMP and OUT folders
-mkdir "$TMPFOLDER"
-mkdir "$TMPFOLDER/K2P"
-mkdir "$TMPFOLDER/JC"
-mkdir "$TMPFOLDER/TN"
-mkdir "$TMPFOLDER/SD"
+# create the OUT folder
 mkdir "$OUTFOLDER"
-
-# check if the TMP directory was created; if not, quit with an error message
-if [[ ! "$TMPFOLDER" || ! -d "$TMPFOLDER" ]]; then
-  echo "Could not create the temporary directory!"
-  exit 1
-fi
 
 # check if the OUT directory was created; if not, quit with an error message
 if [[ ! "$OUTFOLDER" || ! -d "$OUTFOLDER" ]]; then
@@ -189,6 +178,18 @@ fi
 # for each fasta file, run ABGD
 for i in "${!FILES[@]}"
     do
+    # create the TMP folder and its subfolders
+    mkdir "$TMPFOLDER"
+    mkdir "$TMPFOLDER/K2P"
+    mkdir "$TMPFOLDER/JC"
+    mkdir "$TMPFOLDER/TN"
+    mkdir "$TMPFOLDER/SD"
+    # check if the TMP directory was created; if not, quit with an error message
+    if [[ ! "$TMPFOLDER" || ! -d "$TMPFOLDER" ]]; then
+      echo "Could not create the temporary directory!"
+      exit 1
+    fi
+
     file=${FILES[$i]}
  # running ABGD with Kimura-2P distances
 if $K2P; then
@@ -325,7 +326,7 @@ if $SD; then
 fi
 
 
-   # outputting consensus species delimitation
+   # outputting consensus species delimitation and generating .tsv files
    echo ""; echo ""
    if  ! ls $TMPFOLDER/*/* 1>/dev/null 2>&1
    then
@@ -335,23 +336,25 @@ fi
        if ! ls $TMPFOLDER/*/*part.2.txt 1>/dev/null 2>&1
           then
           echo "All individuals are conspecific."
-          else  cat `md5sum $TMPFOLDER/*/*txt| awk '{print $2,$1}'| uniq -c -f1|sort -k1,1 -rn|head -1| awk '{print $2}'` > ${TMPFOLDER}/output
+          grep '>' $file|sed 's/>//'| tr -d "'"| awk '{print $1"\t1"}' > $OUTFOLDER/$file.tsv
+
+          else
+          cat `md5sum $TMPFOLDER/*/*txt| awk '{print $2,$1}'| uniq -c -f1|sort -k1,1 -rn|head -1| awk '{print $2}'` > ${TMPFOLDER}/output
           cat ${TMPFOLDER}/output
+          while read line; do
+            number=$(echo "$line" | cut -d"[" -f 2 | cut -d"]" -f 1)
+            ids=$(echo "$line" | cut -d";" -f 2)
+            ids=${ids:4}
+            for id in $ids
+            do
+              echo -e "$id\t$number" | tr -d "'" >> $OUTFOLDER/$file.tsv
+            done
+          done < ${TMPFOLDER}/output
+
+          rm -rf ${TMPFOLDER}
           echo ""
        fi
    fi
-
-  #outputting .tsv file
-
-while read line; do
-  number=$(echo "$line" | cut -d"[" -f 2 | cut -d"]" -f 1)
-  ids=$(echo "$line" | cut -d";" -f 2)
-  ids=${ids:4}
-  for id in $ids
-  do
-    echo -e "$id\t$number" | tr -d "'" >> $OUTFOLDER/$file.tsv
-  done
-done < ${TMPFOLDER}/output
 
 done
 
