@@ -195,6 +195,7 @@ for i in "${!FILES[@]}"
 if $K2P; then
     if $VERBOSE
     then
+       echo ""; echo ""
        echo "Running ABGD on $file with Kimura-2P distances and X=1.5"
        $ABGD_EXECUTABLE -a -d 0 -o $TMPFOLDER/K2P $file
     else 
@@ -230,6 +231,7 @@ fi
 if $JC; then
     if $VERBOSE
     then
+       echo ""; echo ""
        echo "Running ABGD on $file with Jukes-Cantor distances and X=1.5"
        $ABGD_EXECUTABLE -a -d 1 -o $TMPFOLDER/JC $file
     else 
@@ -263,6 +265,7 @@ fi
 if $TN; then
     if $VERBOSE
     then
+       echo ""; echo ""
        echo "Running ABGD on $file with Tamura-Nei distances and X=1.5"
        $ABGD_EXECUTABLE -a -d 2 -o $TMPFOLDER/TN $file
     else 
@@ -296,6 +299,7 @@ fi
 if $SD; then
     if $VERBOSE
     then
+       echo ""; echo ""
        echo "Running ABGD on $file with simple distances and X=1.5"
        $ABGD_EXECUTABLE -a -d 3 -o $TMPFOLDER/SD $file
     else 
