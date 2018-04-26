@@ -355,7 +355,7 @@ fi
             done
           done < ${TMPFOLDER}/output
 
-   #       rm -rf ${TMPFOLDER}
+          rm -rf ${TMPFOLDER}
           echo ""
        fi
    fi
