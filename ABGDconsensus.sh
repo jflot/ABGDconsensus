@@ -343,7 +343,7 @@ fi
           grep '>' $file|sed 's/>//'| tr -d "'"| awk '{print $1"\t1"}' > $OUTFOLDER/$file.tsv
 
           else
-          cat `md5sum $TMPFOLDER/*/*txt| awk '{print $2,$1}'| uniq -c -f1|sort -k1,1 -rn|head -1| awk '{print $2}'` > ${TMPFOLDER}/output
+          cat `md5sum $TMPFOLDER/*/*txt| awk '{print $2,$1}'| sort -k2,2| uniq -c -f1|sort -k1,1 -rn|head -1| awk '{print $2}'` > ${TMPFOLDER}/output
           cat ${TMPFOLDER}/output
           while read line; do
             number=$(echo "$line" | cut -d"[" -f 2 | cut -d"]" -f 1)
@@ -355,7 +355,7 @@ fi
             done
           done < ${TMPFOLDER}/output
 
-          rm -rf ${TMPFOLDER}
+   #       rm -rf ${TMPFOLDER}
           echo ""
        fi
    fi
